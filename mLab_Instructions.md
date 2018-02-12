@@ -16,3 +16,4 @@
 8. If you now view your app on heroku.com, you will see something like this:
 
 ![](mLab_Instructions/Screenshot%202018-02-10%2009.00.42.png)
+9. To retrieve MONGODB_URI from the command line, use ```$ heroku config:get -a mongo-news-shulme801 MONGODB_URI```

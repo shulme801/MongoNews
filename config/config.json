@@ -3,23 +3,18 @@
     "username": "root",
     "password": null,
     "logging" : false,
-    "database": "posts_db_dev",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false 
+    "database": "news-scraper_dev",
+    "host"    : "127.0.0.1"
+   
   },
   "test": {
     "username": "root",
     "password": null,
     "logging" : false,
-    "database": "posts_db_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false 
+    "database": "news-scraper_test",
+    "host"    : "127.0.0.1"
   },
   "production": {
-    "use_env_variable": "JAWSDB_URL",
-    "dialect": "mysql",
-    "operatorsAliases": false 
+    "use_env_variable": "MONGODB_URI"
   }
 }
