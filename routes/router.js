@@ -1,12 +1,13 @@
-// Dependencies--
-var express = require("express");
+// Dependencies
+var express    = require("express");
 var bodyParser = require("body-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
+var logger     = require("morgan");
+var mongoose   = require("mongoose");
+var router     = express.Router();
 
 // Requiring our Note and Article models--
-var Note = require("./models/note.js");
-var Article = require("./models/article.js");
+var Note    = require("../models/note.js");
+var Article = require("../models/article.js");
 
 // scraping tools
 var request = require("request");
@@ -14,14 +15,16 @@ var cheerio = require("cheerio");
 
 
 // Routes
-app.get("/", function (req, res) {
-  res.send("index.html");
+router.get("/", function (req, res) {
+  console.log("In app.get route");
+  // Scrape data
+  res.redirect('/scrape');
 });
 
 
- var result = [];
-app.get("/scrape", function (req, res) {
- 
+
+router.get("/scrape", function (req, res) {
+   var result = [];
   // First, we grab the body of the html with request
   request("https://www.nytimes.com/", function (error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -30,12 +33,12 @@ app.get("/scrape", function (req, res) {
 
     $("article h2").each(function (i, element) {
 
-      var newArt = {
+      var newArticle = {
         id: i,
         title: $(this).children("a").text(),
         link: $(this).children("a").attr("href")
       };
-      result.push(newArt);
+      result.push(newArticle);
     });
     console.log("Scraped");
     res.send(result);
@@ -44,7 +47,7 @@ app.get("/scrape", function (req, res) {
 });
 
 //Save 
-app.post("/save", function (req, res) {
+router.post("/save", function (req, res) {
   console.log("In save");
   var saveMe = {};
   saveMe.title = req.body.title;
@@ -67,7 +70,7 @@ app.post("/save", function (req, res) {
 
 });
 
-app.get("/articles", function (req, res) {
+router.get("/articles", function (req, res) {
   // Grab every doc in the Articles array
   console.log(" I'm looking for articles from server");
   var savedArticles = [];
@@ -94,7 +97,7 @@ app.get("/articles", function (req, res) {
   });
 });
 
-app.get("/articles/:id", function (req, res) {
+router.get("/articles/:id", function (req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   console.log(req.params.id);
   Article.findOne({ "_id": req.params.id })
@@ -114,7 +117,7 @@ app.get("/articles/:id", function (req, res) {
 });
 
 // Create a new note or replace an existing  note
-app.post("/articles/:id", function (req, res) {
+router.post("/articles/:id", function (req, res) {
 
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);
@@ -152,7 +155,7 @@ app.post("/articles/:id", function (req, res) {
   });
 });
 
-app.post("/deletenote/:id", function (req, res) {
+router.post("/deletenote/:id", function (req, res) {
   console.log("DELETE");
   console.log(req.params.id);
   console.log(req.body.id);
@@ -165,3 +168,6 @@ app.post("/deletenote/:id", function (req, res) {
         console.log("Deleted");
       })
 });
+
+// Export Router to Server.js
+module.exports = router;

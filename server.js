@@ -43,6 +43,9 @@ db.on('error', function(err) {
 // Once logged in to the db through mongoose, log a success message
 db.once('open', function() {
   console.log('Mongoose connection successful.');
+  // Import Routes
+  var router = require('./routes/router.js');
+  app.use('/', router);
   // Listen either on the port Heroku gives us, or on 8080 if we are running on localhost. 
   var PORT = process.env.PORT || 8080;
 
